@@ -105,11 +105,11 @@ WORKDIR /home/webdev/src/web/candylab/
 
 RUN bundler install
 
-RUN bundler exec jekyll build
-RUN touch docs/.nojekyll
+#RUN bundler exec jekyll build
+#RUN touch docs/.nojekyll
 
 #RUN git pull
-RUN git add -A docs/
+#RUN git add -A docs/
 COPY --chown=webdev:webdev update.sh /home/webdev/src/web/candylab/
 #RUN git commit -a -m "Automatic update to static site from travis (updater), jobid: ${TRAVIS_JOB_NUMBER}"
 #RUN git push
