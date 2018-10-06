@@ -110,6 +110,7 @@ RUN touch docs/.nojekyll
 
 #RUN git pull
 RUN git add -A docs/
+COPY --chown=webdev:webdev update.sh /home/webdev/src/web/candylab/
 #RUN git commit -a -m "Automatic update to static site from travis (updater), jobid: ${TRAVIS_JOB_NUMBER}"
 #RUN git push
 #RUN git rev-parse HEAD~1
