@@ -1,8 +1,8 @@
 #!/bin/bash
 
+git pull && \
 bundler exec jekyll build && \
 touch docs/.nojekyll && \
-git pull && \
 git add -A docs/ && \
 git commit -a -m "Automatic update to static site from travis (updater), jobid $@" && \
 git push && \

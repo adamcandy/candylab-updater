@@ -20,7 +20,7 @@ matrix:
     - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
-    - if [ -f ${CACHE_FILE_NODE} ]; then gunzip -c ${CACHE_FILE_NODE} | docker load; fi
+    #- if [ -f ${CACHE_FILE_BUILD} ]; then gunzip -c ${CACHE_FILE_BUILD} | docker load; fi
     - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
     script:
     - docker run -a stdout -t webpages ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
