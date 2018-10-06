@@ -4,7 +4,7 @@ git pull && \
 bundler exec jekyll build && \
 touch docs/.nojekyll && \
 git add -A docs/ && \
-git commit -a -m "Automatic update to static site from travis (updater), jobid $@" && \
+git commit -a -m "$@" && \
 git push && \
 git rev-parse HEAD~1 && exit 0
 
