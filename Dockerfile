@@ -45,7 +45,8 @@ RUN apt-get update && apt-get install -y \
         ruby \
 				ruby-dev \
 				make \
-        build-essential
+        build-essential \
+				git
 
 # Add a user
 RUN adduser --disabled-password --gecos "" webdev 
