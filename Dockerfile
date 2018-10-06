@@ -77,10 +77,11 @@ RUN git clone --depth 1 git@github.com:adamcandy/candylab.org.git /home/webdev/s
 ENV PATH /home/webdev/src/web/candylab:/home/webdev/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV GEM_HOME /home/webdev/gems
 ENV JOBID "${jobid}"
+RUN echo "${jobid}"
 
 RUN gem install jekyll bundler
 
-WORKDIR /home/webdev
+WORKDIR /home/webdev/src/web/candylab/
 
 RUN bundler install
 
