@@ -19,7 +19,8 @@ matrix:
     #- docker run -a stdout -t webpages git pull
     #- docker run -a stdout -t webpages git add -A docs/
     - echo $TRAVIS_JOB_NUMBER
-    - docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid: ${TRAVIS_JOB_NUMBER}"
+    - docker run -a stdout -t webpages pwd
+    - docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
     - docker run -a stdout -t webpages git push
-    - docker run -a stdout -t webpages git rev-parse HEAD~1
+    - docker run -a stdout -t webpages git rev-parse HEAD~1 .
 
