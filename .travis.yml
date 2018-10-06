@@ -1,3 +1,8 @@
+env:
+  global:
+    JOBID=$TRAVIS_JOB_NUMBER
+
+
 matrix:
   include:
   - env:
@@ -10,4 +15,5 @@ matrix:
     - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
-    - docker build --build-arg repo="$TRAVIS_REPO_SLUG" --build-arg branch="$TRAVIS_BRANCH" --build-arg jobid="$TRAVIS_JOB_NUMBER" -f Dockerfile -t webpages .
+    - docker build -t webpages -f Dockerfile --build-arg repo="$TRAVIS_REPO_SLUG" --build-arg branch="$TRAVIS_BRANCH" --build-arg jobid="$TRAVIS_JOB_NUMBER" --build-arg jobidd=$JOBID .
+

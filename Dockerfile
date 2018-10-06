@@ -99,6 +99,8 @@ ENV PATH /home/webdev/src/web/candylab:/home/webdev/gems/bin:/usr/local/sbin:/us
 ENV GEM_HOME /home/webdev/gems
 ENV JOBID "${jobid}"
 RUN echo "${jobid}"
+RUN echo "${JOBID}"
+RUN echo "${jobidd}"
 RUN echo "$branch"
 RUN echo "https://github.com/${repo}"
 
