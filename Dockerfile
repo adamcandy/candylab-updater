@@ -46,6 +46,7 @@ RUN apt-get update && apt-get install -y \
 				ruby-dev \
 				make \
         build-essential \
+				zlib \
 				git
 
 # Add a user
