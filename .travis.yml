@@ -16,10 +16,13 @@ matrix:
     install:
     - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
     script:
-    #- docker run -a stdout -t webpages git pull
-    #- docker run -a stdout -t webpages git add -A docs/
     - echo $TRAVIS_JOB_NUMBER
     - docker run -a stdout -t webpages pwd
+    
+    - docker run -a stdout -t webpages bundler exec jekyll build
+    - docker run -a stdout -t webpages touch docs/.nojekyll
+    #- docker run -a stdout -t webpages git pull
+    - docker run -a stdout -t webpages git add -A docs/
     - docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
     - docker run -a stdout -t webpages git push
     - docker run -a stdout -t webpages git rev-parse HEAD~1 .
