@@ -33,6 +33,8 @@
 
 # DockerFile for a webpage development container
 ARG jobid="[undefined]"
+ARG repo="shingleproject/Shingle"
+ARG branch="master"
 
 # Use a Xenial base image
 FROM ubuntu:xenial
@@ -79,6 +81,8 @@ ENV PATH /home/webdev/src/web/candylab:/home/webdev/gems/bin:/usr/local/sbin:/us
 ENV GEM_HOME /home/webdev/gems
 ENV JOBID "${jobid}"
 RUN echo "${jobid}"
+RUN echo "$branch"
+RUN echo "https://github.com/${repo}"
 
 RUN gem install jekyll bundler
 
