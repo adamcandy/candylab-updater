@@ -1,6 +1,12 @@
 env:
   global:
-    TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+    - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+    - CACHE_DIR=$HOME/.cache/docker
+    - CACHE_FILE_BUILD=$CACHE_DIR/docker_web_build.tar.gz
+
+cache:
+  directories:
+    - $CACHE_DIR
 
 matrix:
   include:
@@ -14,16 +20,16 @@ matrix:
     - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
+    - if [ -f ${CACHE_FILE_NODE} ]; then gunzip -c ${CACHE_FILE_NODE} | docker load; fi
     - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
     script:
-    - echo $TRAVIS_JOB_NUMBER
-    - docker run -a stdout -t webpages pwd
+    - docker run -a stdout -t webpages ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
     
-    - docker run -a stdout -t webpages bundler exec jekyll build
-    - docker run -a stdout -t webpages touch docs/.nojekyll
-    #- docker run -a stdout -t webpages git pull
-    - docker run -a stdout -t webpages git add -A docs/
-    - docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
-    - docker run -a stdout -t webpages git push
-    - docker run -a stdout -t webpages git rev-parse HEAD~1 .
+    #- docker run -a stdout -t webpages bundler exec jekyll build
+    #- docker run -a stdout -t webpages touch docs/.nojekyll
+    ##- docker run -a stdout -t webpages git pull
+    #- docker run -a stdout -t webpages git add -A docs/
+    #- docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
+    #- docker run -a stdout -t webpages git push
+    #- docker run -a stdout -t webpages git rev-parse HEAD~1 .
 
