@@ -1,0 +1,13 @@
+matrix:
+  include:
+  - env:
+    - NAME=web-build
+    services:
+    - docker
+    dist: xenial
+    language: cpp
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
+    - tar xvf store.tar
+    install:
+    - docker build --build-arg jobid="$TRAVIS_JOB_NUMBER" -f Dockerfile -t webpages .
