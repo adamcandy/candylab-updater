@@ -32,9 +32,7 @@
 ##############################################################################
 
 # DockerFile for a webpage development container
-ARG jobid="[undefined]"
-ARG repo="shingleproject/Shingle"
-ARG branch="master"
+ARG TRAVIS_JOB_NUMBER="undefined"
 
 # Use a Xenial base image
 FROM ubuntu:xenial
@@ -89,6 +87,7 @@ RUN chmod 600 /home/webdev/.ssh/candylab-updater
 # Set up git:
 RUN git config --global user.email "adam@candylab.org" 
 RUN git config --global user.name "Adam Candy"
+RUN git config --global push.default matching
 
 # Make a copy of the project
 RUN mkdir /home/webdev/src/
@@ -97,12 +96,8 @@ RUN git clone --depth 1 git@github.com:adamcandy/candylab.org.git /home/webdev/s
 
 ENV PATH /home/webdev/src/web/candylab:/home/webdev/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV GEM_HOME /home/webdev/gems
-ENV JOBID "${jobid}"
-RUN echo "${jobid}"
-RUN echo "${JOBID}"
-RUN echo "${jobidd}"
-RUN echo "$branch"
-RUN echo "https://github.com/${repo}"
+ENV TRAVIS_JOB_NUMBER ${TRAVIS_JOB_NUMBER}
+RUN echo $TRAVIS_JOB_NUMBER
 
 RUN gem install jekyll bundler
 
@@ -117,7 +112,7 @@ RUN git pull
 RUN git add -A docs/
 RUN git commit -a -m "Automatic update to static site from travis (updater), jobid: ${jobid}"
 RUN git push
-RUN git rev-parse HEAD~1
+#RUN git rev-parse HEAD~1
 
 #RUN make
 
