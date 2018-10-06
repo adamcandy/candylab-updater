@@ -96,7 +96,7 @@ RUN git clone --depth 1 git@github.com:adamcandy/candylab.org.git /home/webdev/s
 
 ENV PATH /home/webdev/src/web/candylab:/home/webdev/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV GEM_HOME /home/webdev/gems
-ENV TRAVIS_JOB_NUMBER ${TRAVIS_JOB_NUMBER}
+ENV TRAVIS_JOB_NUMBER $TRAVIS_JOB_NUMBER
 RUN echo $TRAVIS_JOB_NUMBER
 
 RUN gem install jekyll bundler
@@ -110,9 +110,9 @@ RUN touch docs/.nojekyll
 
 RUN git pull
 RUN git add -A docs/
-RUN git commit -a -m "Automatic update to static site from travis (updater), jobid: ${jobid}"
+RUN git commit -a -m "Automatic update to static site from travis (updater), jobid: ${TRAVIS_JOB_NUMBER}"
 RUN git push
-#RUN git rev-parse HEAD~1
+RUN git rev-parse HEAD~1
 
 #RUN make
 
