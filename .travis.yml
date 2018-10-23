@@ -48,7 +48,7 @@ matrix:
     #- dpkg-reconfigure locales
     - sudo locale-gen en_GB.UTF-8
     - sudo /usr/sbin/update-locale LANG=en_GB.UTF-8
-    - echo 'en_GB.UTF-8 UTF-8' | sudo tee -append /etc/locale.gen
+    - echo 'en_GB.UTF-8 UTF-8' | sudo tee --append /etc/locale.gen
     - sudo locale-gen
     # Setup SSH
     # https://stackoverflow.com/questions/23391839/clone-private-git-repo-with-dockerfile
