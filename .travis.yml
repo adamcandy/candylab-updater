@@ -66,11 +66,11 @@ matrix:
     - mkdir $HOME/src/
     - mkdir $HOME/src/web/
     - git clone --depth 1 git@github.com:adamcandy/candylab.org.git $HOME/src/web/candylab/
+    - cp -p update.sh $HOME/src/web/candylab/
     - echo $TRAVIS_JOB_NUMBER
     - gem install jekyll bundler
     - cd $HOME/src/web/candylab/
     - bundler install
-    - cp -p $HOME/update.sh $HOME/src/web/candylab/
     script:
     - cd $HOME/src/web/candylab/
     - ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
