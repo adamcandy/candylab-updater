@@ -52,7 +52,7 @@ matrix:
     - sudo locale-gen
     # Setup SSH
     # https://stackoverflow.com/questions/23391839/clone-private-git-repo-with-dockerfile
-    - mkdir $HOME/.ssh/
+    #- mkdir $HOME/.ssh/
     - echo "IdentityFile $HOME/.ssh/candylab-updater" >> $HOME/.ssh/config
     - echo "StrictHostKeyChecking no" >> $HOME/.ssh/config
     - cp -p candylab-updater $HOME/.ssh/
