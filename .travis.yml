@@ -1,35 +1,66 @@
 env:
   global:
     - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
-    - CACHE_DIR=$HOME/.cache/docker
-    - CACHE_FILE_BUILD=$CACHE_DIR/docker_web_build.tar.gz
-
-cache:
-  directories:
-    - $CACHE_DIR
 
 matrix:
   include:
+  #- env:
+  #  - NAME=web-build-docker
+  #  services:
+  #  - docker
+  #  dist: xenial
+  #  language: cpp
+  #  before_install:
+  #  - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
+  #  - tar xvf store.tar
+  #  install:
+  #  - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
+  #  script:
+  #  - docker run -a stdout -t webpages ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
+    
   - env:
     - NAME=web-build
-    services:
-    - docker
-    dist: xenial
-    language: cpp
+    - LC_ALL=en_GB.UTF-8
+    - LANG=en_GB.UTF-8
+    - LANGUAGE=en_GB.UTF-8
+    - PATH=$HOME/src/web/candylab:$HOME/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - GEM_HOME=$HOME/gems
+    - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+    language: ruby
     before_install:
     - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
-    #- if [ -f ${CACHE_FILE_BUILD} ]; then gunzip -c ${CACHE_FILE_BUILD} | docker load; fi
-    - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
+    - apt-get update
+    - apt-get install -y ruby ruby-dev make build-essential zlib1g-dev git
+    - apt-get install -y locales
+    - dpkg-reconfigure locales
+    - locale-gen en_GB.UTF-8
+    - /usr/sbin/update-locale LANG=en_GB.UTF-8
+    - echo 'en_GB.UTF-8 UTF-8' >> /etc/locale.gen
+    - locale-gen
+    # Setup SSH
+    # https://stackoverflow.com/questions/23391839/clone-private-git-repo-with-dockerfile
+    - mkdir $HOME/.ssh/
+    - echo "IdentityFile $HOME/.ssh/candylab-updater" >> $HOME/.ssh/config
+    - echo "StrictHostKeyChecking no" >> $HOME/.ssh/config
+    - cp -p candylab-updater $HOME/.ssh/
+    - chmod 600 $HOME/.ssh/config
+    - chmod 600 $HOME/.ssh/candylab-updater
+    # Set up git:
+    - git config --global user.email "adam@candylab.org" 
+    - git config --global user.name "Adam Candy"
+    - git config --global push.default matching
+    # Make a copy of the project
+    - mkdir $HOME/src/
+    - mkdir $HOME/src/web/
+    - git clone --depth 1 git@github.com:adamcandy/candylab.org.git $HOME/src/web/candylab/
+    - echo $TRAVIS_JOB_NUMBER
+    - gem install jekyll bundler
+    - cd $HOME/src/web/candylab/
+    - bundler install
+    - cp -p $HOME/update.sh $HOME/src/web/candylab/
     script:
-    - docker run -a stdout -t webpages ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
-    
-    #- docker run -a stdout -t webpages bundler exec jekyll build
-    #- docker run -a stdout -t webpages touch docs/.nojekyll
-    ##- docker run -a stdout -t webpages git pull
-    #- docker run -a stdout -t webpages git add -A docs/
-    #- docker run -a stdout -t webpages git commit -a -m "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
-    #- docker run -a stdout -t webpages git push
-    #- docker run -a stdout -t webpages git rev-parse HEAD~1 .
+    - cd $HOME/src/web/candylab/
+    - ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
 
