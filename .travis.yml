@@ -1,23 +1,10 @@
 env:
   global:
-    - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+  - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+  - secure: tT/EXaklMEQS2DSxXQJlZHRQP21OyP+YExKSx2Jbfmqi6fUEy5C64HJEMcsioT5E86syRDzaqzDZ3Bwk7PTWN1Jj4i6WqhyR3vPouzRu/DxHtrj7nH8LS3LnEciTl0ymF/VAt+2ClVvk9CZBuSzGF2KByXf8A0M22iAOVeHxl5AQTgoGcazr69bxlktbpqxAr6ak2Bfl+nOPfNqSiZUUKrzY4Byy+xRAUpGQ+Kt/QSYvR/1Fx9PHMJvAAvXiUbQdR6n5+7Mi1vvGdzut3fpKG5EYo6K5Wy6Lg1+FNWTF2dLkggU9lVLlW++PCN/Q8Oy2FATNymBtYKbhj2H74D1JIUXf2gCUH24rJIN9mYV4sC3Ati/AyzCX4dUIV/oB8mlbgTH8AItXOSOLuKruZhNWM10y+ucE1aVYwXa1WUZmAODurjSiLweZXoNjt0vmbijnfKweWuYXOBUsLJwaBsT61UkqswGw7gIsVvYcmWNmbkRPDElYdKRtm2/hKE8Umo58596gUO1qoRO44HTxHQk9q89X14/kBEtlkT8zsPYZc646blfpyRY6dAHf3uUSgRukSLsy3tnbZ7Q3V3O3DlrDG/fou2qRknRfNM46BYxdP+Y8l2EZjO0Qcng7y0PsWfLHNl9TD1WnTkJknYjLFAafu6W/mP/hIfVMYKfwlFTGDhA=
 
 matrix:
   include:
-  #- env:
-  #  - NAME=web-build-docker
-  #  services:
-  #  - docker
-  #  dist: xenial
-  #  language: cpp
-  #  before_install:
-  #  - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
-  #  - tar xvf store.tar
-  #  install:
-  #  - docker build -t webpages -f Dockerfile --build-arg TRAVIS_JOB_NUMBER="$TRAVIS_JOB_NUMBER" .
-  #  script:
-  #  - docker run -a stdout -t webpages ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
-    
   - env:
     - NAME=web-build
     - LC_ALL=en_GB.UTF-8
@@ -31,37 +18,30 @@ matrix:
     addons:
       apt:
         packages:
-          - ruby
-          - ruby-dev
-          - make
-          - build-essential
-          - zlib1g-dev
-          - git
-          - locales
+        - ruby
+        - ruby-dev
+        - make
+        - build-essential
+        - zlib1g-dev
+        - git
+        - locales
     before_install:
-    - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
+    - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv
+      -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
-    #- apt-get update
-    #- apt-get install -y ruby ruby-dev make build-essential zlib1g-dev git
-    #- apt-get install -y locales
-    #- dpkg-reconfigure locales
     - sudo locale-gen en_GB.UTF-8
     - sudo /usr/sbin/update-locale LANG=en_GB.UTF-8
     - echo 'en_GB.UTF-8 UTF-8' | sudo tee --append /etc/locale.gen
     - sudo locale-gen
-    # Setup SSH
-    # https://stackoverflow.com/questions/23391839/clone-private-git-repo-with-dockerfile
     - echo "IdentityFile $HOME/.ssh/candylab-updater" >> $HOME/.ssh/config
     - echo "StrictHostKeyChecking no" >> $HOME/.ssh/config
     - cp -p candylab-updater $HOME/.ssh/
     - chmod 600 $HOME/.ssh/config
     - chmod 600 $HOME/.ssh/candylab-updater
-    # Set up git:
-    - git config --global user.email "adam@candylab.org" 
+    - git config --global user.email "adam@candylab.org"
     - git config --global user.name "Adam Candy"
     - git config --global push.default matching
-    # Make a copy of the project
     - mkdir $HOME/src/
     - mkdir $HOME/src/web/
     - git clone --depth 1 git@github.com:adamcandy/candylab.org.git $HOME/src/web/candylab/
@@ -73,4 +53,8 @@ matrix:
     script:
     - cd $HOME/src/web/candylab/
     - ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
+    after_success:
+    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20success&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER" >/dev/null
+    after_failure:
+    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20failure&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER" >/dev/null
 
