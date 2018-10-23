@@ -54,7 +54,7 @@ matrix:
     - cd $HOME/src/web/candylab/
     - ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"
     after_success:
-    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20success&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER" >/dev/null
+    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20success&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER"
     after_failure:
-    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20failure&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER" >/dev/null
+    - wget -q -O - "http://prowl.weks.net/publicapi/add?                                                    apikey=${prowlkey}&priority=0&application=CANDYLAB&event=Build%20failure&description=$TRAVIS_COMMIT_MESSAGE%20$TRAVIS_JOB_NUMBER"
 
