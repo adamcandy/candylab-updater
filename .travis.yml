@@ -27,13 +27,23 @@ matrix:
     - GEM_HOME=$HOME/gems
     - TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
     language: ruby
+    addons:
+      apt:
+        packages:
+          - ruby
+          - ruby-dev
+          - make
+          - build-essential
+          - zlib1g-dev
+          - git
+          - locales
     before_install:
     - openssl aes-256-cbc -K $encrypted_a79bb47bd049_key -iv $encrypted_a79bb47bd049_iv -in store.tar.enc -out store.tar -d
     - tar xvf store.tar
     install:
-    - apt-get update
-    - apt-get install -y ruby ruby-dev make build-essential zlib1g-dev git
-    - apt-get install -y locales
+    #- apt-get update
+    #- apt-get install -y ruby ruby-dev make build-essential zlib1g-dev git
+    #- apt-get install -y locales
     - dpkg-reconfigure locales
     - locale-gen en_GB.UTF-8
     - /usr/sbin/update-locale LANG=en_GB.UTF-8
