@@ -49,7 +49,7 @@ matrix:
     - echo $TRAVIS_JOB_NUMBER
     - gem install jekyll bundler
     - cd $HOME/src/web/candylab/
-    - bundler install
+    - bundler install --gemfile=assets/dev/Gemfile
     script:
     - cd $HOME/src/web/candylab/
     - ./update.sh "Automatic update to static site from travis (updater), jobid $TRAVIS_JOB_NUMBER"

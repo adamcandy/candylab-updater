@@ -103,7 +103,7 @@ RUN gem install jekyll bundler
 
 WORKDIR /home/webdev/src/web/candylab/
 
-RUN bundler install
+RUN bundler install --gemfile=assets/dev/Gemfile
 
 #RUN bundler exec jekyll build
 #RUN touch docs/.nojekyll
